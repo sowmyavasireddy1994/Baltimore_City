@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Baltimore City Open Checkbook</title>
+    <link rel="icon" href="data:image/x-icon;base64,AAABAAEAEBAQAAEAAQAwAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAA..." type="image/x-icon">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+
+        body, h1, h2, h3, p, ul, li {
+            margin: 0;
+            padding: 0;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            max-width: 1280px;
+            margin: 0 auto;
+            background: #121826;
+            color: #cbd5e1;
+            font-family: 'Outfit', sans-serif;
+            line-height: 1.5;
+            overflow-x: hidden;
+        }
+
+        header {
+            background-color: rgba(33, 41, 54, 0.9);
+            padding: 10px 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .nav-logo {
+            height: 60px;
+            width: 400px;
+        }
+
+        .nav-logo img {
+            height: 100%;
+            width: 100%;
+            object-fit: contain;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        nav a {
+            color: #E5E7EB;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        nav a:hover {
+            color: #9DA3AE;
+        }
+
+        .search-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .search-container input {
+            padding: 8px;
+            border: none;
+            border-radius: 4px 0 0 4px;
+        }
+
+        .search-container button {
+            padding: 8px 12px;
+            background-color: #4B5563;
+            color: white;
+            border: none;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+        }
+
+        .slider-container {
+            margin-top: 80px;
+            position: relative;
+            width: 100%;
+            height: 400px;
+            overflow: hidden;
+        }
+
+        .slider {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .slider img {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+        }
+
+        .slider-nav button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: background-color 0.3s;
+        }
+
+        .slider-nav button:hover {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+
+        .prev-btn { left: 10px; }
+        .next-btn { right: 10px; }
+
+        .title {
+            margin-top: 40px;
+            line-height: 2.5rem;
+            font-size: 40px;
+            color: #E5E7EB;
+            text-align: center;
+            font-weight: 600;
+            text-transform: uppercase;
+            animation: fadeIn 1.5s ease-in-out;
+        }
+
+        .subtitle {
+            margin-top: 16px;
+            color: #9DA3AE;
+            font-size: 18px;
+            line-height: 1rem;
+            text-align: center;
+            animation: fadeIn 2s ease-in-out;
+        }
+
+        .cards {
+            margin-top: 60px;
+            display: flex;
+            gap: 80px;
+            flex-wrap: wrap;
+            justify-content: center;
+            animation: slideUp 2s ease-in-out;
+        }
+
+        .cards > .card {
+            display: flex;
+            flex-direction: column;
+            background-color: #212936;
+            padding: 48px;
+            box-shadow: 0px 30px 100px 0px rgba(17, 23, 41, 0.15);
+            border-radius: 16px;
+            gap: 24px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            width: 250px;
+            height: 300px;
+            justify-content: center;
+            text-align: center;
+            opacity: 0.9;
+            position: relative;
+        }
+
+        .cards > .card:hover {
+            transform: scale(1.05);
+            box-shadow: 0px 40px 120px 0px rgba(17, 23, 41, 0.25);
+        }
+
+        .cards > .card > span {
+            padding: 16px;
+            background-color: #FCEED8;
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            margin: 0 auto;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .cards > .card > h1 {
+            font-size: 20px;
+            line-height: 1.25rem;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .cards > .card > p {
+            font-size: 16px;
+            line-height: 1rem;
+            font-weight: 400;
+            color: #9DA3AE;
+        }
+
+        .dashboard-container {
+            margin: 40px auto;
+            width: 100%;
+            max-width: 1000px;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(18, 24, 38, 0.9);
+            padding: 40px 0;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 2s ease-in-out;
+        }
+
+        .dashboard {
+            display: none;
+            width: 100%;
+            height: 850px; /* Increased height */
+            border: none;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+
+        }
+
+        .dashboard.active {
+            display: block;
+        }
+
+        #about {
+            margin-top: 60px;
+            padding: 40px;
+            background-color: rgba(33, 41, 54, 0.9);
+            border-radius: 16px;
+            box-shadow: 0px 30px 100px 0px rgba(17, 23, 41, 0.15);
+        }
+
+        #about h2 {
+            color: #E5E7EB;
+            margin-bottom: 20px;
+        }
+
+        #about p {
+            margin-bottom: 15px;
+        }
+
+        #about h3 {
+            color: #E5E7EB;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+
+        #about ul {
+            list-style-type: none;
+            padding-left: 20px;
+        }
+
+        #about li {
+            margin-bottom: 10px;
+        }
+
+        #about strong {
+            color: #E5E7EB;
+        }
+
+        #contact {
+            margin-top: 60px;
+            padding: 40px;
+            background-color: rgba(33, 41, 54, 0.9);
+            border-radius: 16px;
+            box-shadow: 0px 30px 100px 0px rgba(17, 23, 41, 0.15);
+        }
+
+        #contact h2 {
+            color: #E5E7EB;
+            margin-bottom: 20px;
+        }
+
+        #contact form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        #contact input, #contact textarea {
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+        }
+
+        #contact button {
+            padding: 10px;
+            background-color: #4B5563;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        @media screen and (max-width: 640px) {
+            .cards {
+                flex-direction: column;
+                gap: 40px;
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="nav-logo">
+                <img src="city_logo.jpg" alt="Baltimore City Logo">
+            </div>
+            <div class="nav-links">
+                <a href="#home">Home</a>
+                <a href="#dashboards">Dashboards</a>
+                <a href="#about">About</a>
+                <a href="#contact">Contact</a>
+                <div class="search-container">
+                    <input type="text" placeholder="Search...">
+                    <button>Search</button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div id="home" class="slider-container">
+        <div class="slider">
+            <img src="baltimore_skyline.jpg" alt="Baltimore Skyline">
+            <img src="baltimore_harbor.jpg" alt="Baltimore Harbor">
+            <img src="inner_harbor_night.jpg" alt="Inner Harbor at Night">
+            <img src="city_hall.jpg" alt="Baltimore City Hall">
+            <img src="fort_mchenry.jpg" alt="Fort McHenry">
+            <img src="camden_yards.jpg" alt="Camden Yards">
+            <img src="national_aquarium.jpg" alt="National Aquarium">
+            <img src="federal_hill.jpg" alt="Federal Hill Park">
+        </div>
+        <div class="slider-nav">
+            <button class="prev-btn">&lt;</button>
+            <button class="next-btn">&gt;</button>
+        </div>
+    </div>
+
+    <h1 class="title">Baltimore City Open Checkbook</h1>
+    <p class="subtitle">Explore the financial transparency dashboards of Baltimore City</p>
+
+    <div id="dashboards" class="cards">
+        <div class="card" onclick="switchDashboard('dashboard1')">
+            <span>📊</span>
+            <h1>Dashboard 1</h1>
+            <p>Analyze Baltimore's Open Checkbook data for FY2020.</p>
+        </div>
+        <div class="card" onclick="switchDashboard('dashboard2')">
+            <span>📈</span>
+            <h1>Dashboard 2</h1>
+            <p>Dive into additional financial insights and analytics.</p>
+        </div>
+    </div>
+
+    <div class="dashboard-container">
+        <div id="dashboard1" class="dashboard"></div>
+        <div id="dashboard2" class="dashboard"></div>
+    </div>
+
+    <div id="about">
+        <h2>Department of Accounts Payable</h2>
+        <p>The Department of Accounts Payable (AP) manages all payments and disbursements made by the City, excluding payroll and debt management. Our team works closely with agency fiscal offices to ensure that vendors are paid on time.</p>
+
+        <h3>Invoice Submission via Workday</h3>
+        <p>All suppliers must submit invoices through Workday. When using Workday's Supplier Self-Service Portal, be sure to select the correct purchase order from the drop-down menu before attaching your invoice.</p>
+
+        <h3>Glossary of Terms</h3>
+        <ul>
+            <li><strong>AGENCY:</strong> An organization authorized by the Mayor and City Council to operate in the best interest of the public.</li>
+            <li><strong>CAPITAL FUND:</strong> A set of budget accounts established to plan for specific capital projects financed by revenues received from City funds, bonds, State, federal, and other miscellaneous funds.</li>
+            <li><strong>COST CENTER DESCRIPTION:</strong> A code or name used to keep track of and manage the finances of a controlled and planned organization.</li>
+            <li><strong>GENERAL FUND:</strong> A central fund into which most of the City's tax and unrestricted revenues are budgeted to support basic City operations and pay-as-you-go (PAYGO) capital projects.</li>
+            <li><strong>SUPPLIER INVOICE NUMBER:</strong> Submitted to Workday by OCR or created through the portal by the supplier as the result of a purchase order, generating approvals through a workflow.</li>
+            <li><strong>SUPPLIER NAME:</strong> A person or company billing the City.</li>
+            <li><strong>SPEND CATEGORY DESCRIPTION:</strong> A commodity code which identifies the type of good/service being purchased.</li>
+            <li><strong>WORKDAY:</strong> An enterprise, cloud-based application designed for human capital management (HCM) and financial management systems.</li>
+        </ul>
+    </div>
+
+    <div id="contact">
+        <h2>Contact Us</h2>
+        <form>
+            <input type="text" placeholder="Your Name" required>
+            <input type="email" placeholder="Your Email" required>
+            <textarea placeholder="Your Message" rows="5" required></textarea>
+            <button type="submit">Send Message</button>
+        </form>
+    </div>
+
+    <script src="https://public.tableau.com/javascripts/api/tableau-2.min.js"></script>
+    <script>
+         const dashboards = {
+            dashboard1: "https://public.tableau.com/views/BaltimoreCity_OpenCheckBook_FY2020/D1",
+            dashboard2: "https://public.tableau.com/views/BaltimoreCity_OpenCheckBook_FY2020/D2"
+        };
+
+        function loadDashboard(containerId, url) {
+            const container = document.getElementById(containerId);
+            if (!container.hasAttribute("data-loaded")) {
+            const viz = new tableau.Viz(container, url, {
+                    width: "1000px",
+                    height: "850px", /* Increased height */
+                    hideTabs: true
+                });
+                container.setAttribute("data-loaded", true);
+        }
+    }
+
+
+        function switchDashboard(activeDashboardId) {
+            document.querySelectorAll(".dashboard").forEach(dashboard => {
+                dashboard.classList.remove("active");
+            });
+            const activeDashboard = document.getElementById(activeDashboardId);
+            activeDashboard.classList.add("active");
+            document.querySelector(".dashboard-container").style.display = "flex";
+            loadDashboard(activeDashboardId, dashboards[activeDashboardId]);
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            switchDashboard("dashboard1");
+            startSlider();
+        });
+
+        function startSlider() {
+            const slider = document.querySelector('.slider');
+            const slides = Array.from(slider.children);
+            const slideWidth = slides[0].getBoundingClientRect().width;
+
+            let currentSlide = 0;
+
+            function moveToSlide(index) {
+                slider.style.transform = `translateX(-${slideWidth * index}px)`;
+                currentSlide = index;
+            }
+
+            function nextSlide() {
+                currentSlide = (currentSlide + 1) % slides.length;
+                moveToSlide(currentSlide);
+            }
+
+            function prevSlide() {
+                currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+                moveToSlide(currentSlide);
+            }
+
+            document.querySelector('.next-btn').addEventListener('click', nextSlide);
+            document.querySelector('.prev-btn').addEventListener('click', prevSlide);
+
+            setInterval(nextSlide, 2000);
+        }
+    </script>
+</body>
+</html>
+
